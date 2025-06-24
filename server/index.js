@@ -6,7 +6,7 @@ app.use(express.json())
 
 // Simple Route
 app.get('/',(req,res)=>{
-    res.send("Firebase API Running")
+    res.send("Render API Running")
 })
 
 
