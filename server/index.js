@@ -1,0 +1,39 @@
+const express = require("express");
+const {db} = require("./firebase-config")
+
+const app = express()
+app.use(express.json())
+
+// Simple Route
+app.get('/',(req,res)=>{
+    res.send("Firebase API Running")
+})
+
+
+//Example API Endpoint
+
+const output = {
+    name:"sathish"
+}
+
+app.get('/api',(req,res)=>{
+    res.json(output)
+})
+
+// FIrebase DB
+app.get("/api/data",async (req,res)=>{
+    // try{
+        const snapshot = await db.collection('items').get()
+        const items = [];
+        snapshot.forEach((doc)=>{
+            items.push({id:doc.id})
+        })
+    // }
+    res.json(items)
+})
+
+
+const PORT = 3000
+app.listen(PORT,()=>{
+    console.log('Server is running')
+})
