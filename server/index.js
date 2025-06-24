@@ -6,7 +6,7 @@ app.use(express.json())
 
 // Simple Route
 app.get('/',(req,res)=>{
-    res.send("Render API Running")
+    res.send("<h1 style='color:red'>Render API Running</h1>")
 })
 
 
