@@ -20,6 +20,11 @@ app.get('/api',(req,res)=>{
     res.json(output)
 })
 
+app.all('/test',(req,res)=>{
+    let request = req.query
+    res.send(request)
+})
+
 // FIrebase DB
 app.get("/api/data",async (req,res)=>{
     // try{
