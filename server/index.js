@@ -19,22 +19,22 @@ app.get('/api',(req,res)=>{
 // Routes
 app.use('/api/auth',authRoutes)
 
-// FIrebase DB
-app.get("/api/data",async (req,res)=>{
-    // try{
-        const snapshot = await db.collection('items').get()
-        const items = [];
-        snapshot.forEach((doc)=>{
-            const data = doc.data()
-            items.push({
-                id:doc.id,
-                name:data.name,
-                age:data.age
-            })
-        })
-    // }
-    res.json(items)
-})
+// // FIrebase DB
+// app.get("/api/data",async (req,res)=>{
+//     // try{
+//         const snapshot = await db.collection('items').get()
+//         const items = [];
+//         snapshot.forEach((doc)=>{
+//             const data = doc.data()
+//             items.push({
+//                 id:doc.id,
+//                 name:data.name,
+//                 age:data.age
+//             })
+//         })
+//     // }
+//     res.json(items)
+// })
 
 
 const PORT = 3000
