@@ -1,29 +1,23 @@
 const express = require("express");
-const {db} = require("./firebase-config")
-
-const app = express()
+const {db} = require("./firebase-config");
+const app = express();
 app.use(express.json())
+const authRoutes = require("./routes/authRoutes")
+
 
 //Api url redirect to Xecron Domain
 app.get('/',(req,res)=>{
      res.redirect("https://www.xecrontechnologies.in");
 })
-
-
-//Example API Endpoint
-
-const output = {
-    name:"sathish"
-}
-
+//Render ALive Response
 app.get('/api',(req,res)=>{
-    res.json(output)
+    res.send("Xecron on Live")
 })
 
-app.all('/test',(req,res)=>{
-    let request = req.query
-    res.send(request)
-})
+
+
+// Routes
+app.use('/api/auth',authRoutes)
 
 // FIrebase DB
 app.get("/api/data",async (req,res)=>{
@@ -31,7 +25,12 @@ app.get("/api/data",async (req,res)=>{
         const snapshot = await db.collection('items').get()
         const items = [];
         snapshot.forEach((doc)=>{
-            items.push({id:doc.id})
+            const data = doc.data()
+            items.push({
+                id:doc.id,
+                name:data.name,
+                age:data.age
+            })
         })
     // }
     res.json(items)
