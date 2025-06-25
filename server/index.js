@@ -4,7 +4,7 @@ const {db} = require("./firebase-config")
 const app = express()
 app.use(express.json())
 
-// Simple Route
+//Api url redirect to Xecron Domain
 app.get('/',(req,res)=>{
      res.redirect("https://www.xecrontechnologies.in");
 })
