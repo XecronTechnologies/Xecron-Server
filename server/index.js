@@ -2,15 +2,9 @@ const express = require("express");
 const app = express();
 app.use(express.json());
 const nodemailer = require("nodemailer");
-
 require("dotenv").config();
 
-
-
-
-
 const { createClient } = require("@supabase/supabase-js");
-
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -18,10 +12,62 @@ const supabase = createClient(
 );
 
 
+// Add this new endpoint to your existing code
+app.post("/zohomail", async (req, res) => {
+  try {
+    console.log("Request body:", req.body); // Log incoming request
 
+    if (!req.body.client_body.from || !req.body.client_body.to) {
+      return res.status(400).json({ error: "Both 'from' and 'to' emails are required" });
+    }
+
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.zoho.in',
+      port: 465,
+      secure: true,
+      auth: {
+        user: req.body.client_body.from,
+        pass: process.env.ZOHO_APP_PASSWORD
+      },
+      debug: true, // Enable verbose logging
+      logger: true
+    });
+
+    console.log("Attempting to verify SMTP connection...");
+    await transporter.verify(); // This will throw an error if auth fails
+    console.log("SMTP connection verified");
+
+    const mailOptions = {
+      from: req.body.client_body.from,
+      to: req.body.client_body.to,
+      subject: req.body.client_body.subject || "Test Email from Zoho SMTP",
+      text: req.body.client_body.text || "This is a test email sent via Zoho SMTP and Nodemailer",
+      html: req.body.client_body.html || `<p>This is a <strong>test email</strong> sent via Zoho SMTP and Nodemailer</p>`
+    };
+
+    console.log("Sending email with options:", mailOptions);
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent successfully:", info.messageId);
+
+    return res.json({
+      success: true,
+      message: "Test email sent successfully",
+      messageId: info.messageId
+    });
+
+  } catch (err) {
+    console.error("FULL ERROR OBJECT:", err);
+    return res.status(500).json({
+      error: "Failed to send test email",
+      details: err.message,
+      code: err.code,
+      stack: err.stack // Include stack trace for debugging
+    });
+  }
+});
 
 // Email endpoint
-app.post("/send-test-email", async (req, res) => {
+app.post("/gmail", async (req, res) => {
   try {
     
 // Create a transporter factory function
@@ -189,5 +235,5 @@ app.get("/api", (req, res) => {
 
 const PORT = 3000;
 app.listen(PORT, () => {
-  console.log("Server is running");
+  console.log("Server is running at http://localhost:3000");
 });
