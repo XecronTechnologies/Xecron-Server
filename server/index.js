@@ -10,7 +10,7 @@ import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 
 //Xecron Imports
-import {RecordUsageUpdate,GetTableRecordCount,RecordLimitCheck} from "./utils/updateCount.js";
+import {RecordUsageUpdate,GetTableRecordCount,RecordLimitCheck,GetTableRecordData} from "./utils/updateCount.js";
 const xecronDomain = `https://api.xecrontechnologies.in`;
 
 const supabase = createClient(
@@ -18,12 +18,23 @@ const supabase = createClient(
   process.env.SUPABASE_KEY
 );
 
+
+app.post('/get-table', async(req,res)=>{
+  const data= await GetTableRecordData(req.body.c_limit.cl)
+  console.log("Table", data)
+  res.json(data)
+})
+
 const recordLimitCheck = async (req, res, type) => {
   let data = await RecordLimitCheck(req.body.c_limit.cl)
   console.log("data",data)
   let rec_lmt = data.data.rec_lmt
   let rec_usage = data.data.rec_usage
+
+
+  let rowCount = await GetTableRecordCount(req.body.c_limit.cl)
     let error_map = {
+      rec_count:rowCount,
       rec_lmt:rec_lmt,
       rec_usage: rec_usage,
       remaining: rec_lmt - rec_usage,
@@ -267,14 +278,11 @@ const addClient = async (req, res) => {
   let clientUsage = 0;
   // Xecron Limit Check
   try {
-    const { data, error } = await supabase
-      .from("xecron_clients_limitations")
-      .select("rec_lmt,rec_usage")
-      .eq("cl", req.body.c_limit.cl);
-    console.log("data", data);
 
-    clientLimit = data[0].rec_lmt;
-    clientUsage = data[0].rec_usage;
+    const data = await RecordLimitCheck(req.body.c_limit.cl)
+console.log("Data",data)
+    clientLimit = data.data.rec_lmt;
+    clientUsage = data.data.rec_usage;
     console.log("11:", clientLimit);
   } catch (err) {
     console.warn("Unexpected error while fetching limit:", err.message);
@@ -283,7 +291,6 @@ const addClient = async (req, res) => {
   try {
     let clientCount = await GetTableRecordCount(req.body.c_limit.cl)
     // if (!clientCount) return res.json({ error: "No client Name" });
-
     if (clientCount >= clientLimit) {
       return res.status(400).json({
         Warning: `Client limit reached (${clientCount}/${clientLimit})`,
@@ -294,12 +301,14 @@ const addClient = async (req, res) => {
       .from(`${req.body.c_limit.cl}`)
       .insert([req.body.c_body]);
       if (insertError) throw insertError;
-      let updateLimit = await RecordUsageUpdate(clientUsage,req.body.c_limit.cl)
+    const updateTable = await GetTableRecordCount(req.body.c_limit.cl)
+  const updateClientLimitation = await RecordUsageUpdate(updateTable,req.body.c_limit.cl)
     res.json({
       success: true,
-      message: "Client added successfullya",
-      usage: updateLimit
+      usage: updateClientLimitation
     });
+    
+   
   } catch (err) {
     console.error("Error:", err);
     res.status(500).json({
@@ -323,11 +332,16 @@ app.delete("/del-cld", async (req, res) => {
   if (!id) return res.status(400).json({ error: "Missing id parameter" });
 
   const { data, error } = await supabase
-    .from("customers")
+    .from(req.body.c_limit.cl)
     .delete()
     .eq("id", id);
+  const updateTable = await GetTableRecordCount(req.body.c_limit.cl)
+  const updateClientLimitation = await RecordUsageUpdate(updateTable,req.body.c_limit.cl)
   if (error) return res.status(500).json({ error });
-  res.json(data);
+  res.json({
+    rec_lmt:updateTable,
+    rec_update: true
+  });
 });
 
 app.post("/update", async (req, res) => {

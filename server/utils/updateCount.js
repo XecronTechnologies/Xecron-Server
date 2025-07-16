@@ -15,8 +15,8 @@ const supabase = createClient(
 
 
 export const RecordUsageUpdate=async(clientUsage,clientName)=>{
-    await supabase.from("xecron_clients_limitations").update({ rec_usage: (clientUsage || 0) + 1 }).eq("cl", clientName);
-    return clientUsage+1
+    await supabase.from("xecron_clients_limitations").update({ rec_usage: clientUsage  }).eq("cl", clientName);
+    return clientUsage
 }
 
 export const GetTableRecordCount = async(clientName)=>{
@@ -26,5 +26,10 @@ export const GetTableRecordCount = async(clientName)=>{
 
 export const RecordLimitCheck = async(clientName)=>{
   let data = await supabase.from("xecron_clients_limitations").select("rec_usage,rec_lmt").eq("cl",clientName).maybeSingle();
+  return data
+}
+
+export const GetTableRecordData = async (clientName)=>{
+  let data = await supabase.from(clientName).select("*").eq("form_type","testForm")
   return data
 }
