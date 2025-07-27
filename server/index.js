@@ -1,22 +1,281 @@
 import express, { json } from "express";
 import { createTransport } from "nodemailer";
+import TelegramBot from "node-telegram-bot-api";
 import cors from "cors";
+import { createClient } from "@supabase/supabase-js";
+import dotenv from "dotenv";
 const app = express();
 app.use(json());
 app.use(cors());
 dotenv.config();
 
-import { createClient } from "@supabase/supabase-js";
-import dotenv from "dotenv";
-
 //Xecron Imports
 import {RecordUsageUpdate,GetTableRecordCount,RecordLimitCheck,GetTableRecordData} from "./utils/updateCount.js";
-const xecronDomain = `https://api.xecrontechnologies.in`;
+import sendPDFToTelegram from './utils/telegramBotApis.js';
 
+const xecronDomain = `https://api.xecrontechnologies.in`;
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_KEY
 );
+
+
+////////////////////////////////
+import { google } from 'googleapis';
+import { readFile } from 'fs/promises';
+
+
+// Load Service Account
+const serviceAccount = JSON.parse(
+  await readFile(new URL('./xecron-e86d9-ffc6cc6a8928.json', import.meta.url))
+);
+
+// Initialize Google Sheets
+const sheets = google.sheets('v4');
+const auth = new google.auth.JWT({
+  email: "sheets-api-bot@xecron-e86d9.iam.gserviceaccount.com",
+  key: serviceAccount.private_key,
+  scopes: ['https://www.googleapis.com/auth/spreadsheets']
+});
+
+// Config
+const SPREADSHEET_ID = '1rAHKgaAhGTkWnNUVq27V9K2pBnbLySfs_Gg7kOeoyM8';
+const SHEET_NAME = 'Logs';
+const LOG_COLUMNS = ['Timestamp', 'Message', 'Status', 'FullData'];
+const ERROR_SHEET_NAME = 'ErrorLogs'; // New sheet for errors
+
+// Initialize Sheets
+async function initSheet() {
+  try {
+    // Create main logs sheet if needed
+    await sheets.spreadsheets.values.append({
+      auth,
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${SHEET_NAME}!A1`,
+      valueInputOption: 'RAW',
+      resource: { values: [LOG_COLUMNS] }
+    });
+    
+    // Create error logs sheet if needed
+    await sheets.spreadsheets.values.append({
+      auth,
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${ERROR_SHEET_NAME}!A1`,
+      valueInputOption: 'RAW',
+      resource: { values: [['Timestamp', 'Error', 'Details', 'Context']] }
+    });
+    
+    console.log('Sheets initialized');
+  } catch (error) {
+    console.log('Sheets already exist or error:', error.message);
+  }
+}
+
+// Log error to error sheet
+async function logErrorToSheet(error, context = {}) {
+  try {
+    const errorEntry = [
+      new Date().toISOString(),
+      error.message,
+      JSON.stringify(error.stack || error),
+      JSON.stringify(context)
+    ];
+
+    await sheets.spreadsheets.values.append({
+      auth,
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${ERROR_SHEET_NAME}!A:D`,
+      valueInputOption: 'USER_ENTERED',
+      insertDataOption: 'INSERT_ROWS',
+      resource: { values: [errorEntry] }
+    });
+  } catch (error) {
+    console.error('FAILED TO LOG ERROR:', error);
+  }
+}
+
+// Mass insert function with error logging
+async function massInsert(logData, total = 100000) {
+  const BATCH_SIZE = 1000;
+  const DELAY_MS = 100;
+  let inserted = 0;
+
+  while (inserted < total) {
+    const batch = [];
+    const remaining = total - inserted;
+    const currentBatchSize = Math.min(BATCH_SIZE, remaining);
+
+    // Prepare batch
+    for (let i = 0; i < currentBatchSize; i++) {
+      batch.push([
+        new Date().toISOString(),
+        `${logData.message}-${inserted + i}`,
+        logData.status,
+        JSON.stringify({ ...logData, iteration: inserted + i })
+      ]);
+    }
+
+    try {
+      const response = await sheets.spreadsheets.values.append({
+        auth,
+        spreadsheetId: SPREADSHEET_ID,
+        range: `${SHEET_NAME}!A:D`,
+        valueInputOption: 'USER_ENTERED',
+        insertDataOption: 'INSERT_ROWS',
+        resource: { values: batch }
+      });
+
+      inserted += currentBatchSize;
+      console.log(`Inserted ${inserted}/${total} records`);
+
+      if (inserted < total) await new Promise(r => setTimeout(r, DELAY_MS));
+    } catch (error) {
+      console.error(`Batch failed at ${inserted}:`, error.message);
+      
+      // Log error to error sheet
+      await logErrorToSheet(error, {
+        batchStart: inserted,
+        batchSize: currentBatchSize,
+        message: logData.message
+      });
+
+      await new Promise(r => setTimeout(r, 5000)); // Longer delay on error
+    }
+  }
+  return inserted;
+}
+
+// Main logging function
+async function logToSheet(req, res) {
+  if (!req.body.message || !req.body.status) {
+    return res.status(400).json({ 
+      error: 'Missing required fields: message and status' 
+    });
+  }
+
+  try {
+    if (req.body.massInsert) {
+      massInsert(req.body)
+        .then(count => console.log(`✅ Inserted ${count} records`))
+        .catch(async (err) => {
+          console.error('Mass insert failed:', err);
+          await logErrorToSheet(err, { type: 'massInsert' });
+        });
+
+      return res.json({
+        success: true,
+        message: 'Started mass insertion of 100k records',
+        note: 'Check server logs and ErrorLogs sheet for progress'
+      });
+    }
+
+    // Single insert
+    const logEntry = [
+      new Date().toISOString(),
+      req.body.message,
+      req.body.status,
+      JSON.stringify(req.body)
+    ];
+
+    const response = await sheets.spreadsheets.values.append({
+      auth,
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${SHEET_NAME}!A:D`,
+      valueInputOption: 'USER_ENTERED',
+      insertDataOption: 'INSERT_ROWS',
+      resource: { values: [logEntry] }
+    });
+
+    return res.json({
+      success: true,
+      range: response.data.updates.updatedRange,
+      timestamp: logEntry[0]
+    });
+
+  } catch (error) {
+    console.error('API Error:', error);
+    await logErrorToSheet(error, { 
+      endpoint: '/gs',
+      body: req.body 
+    });
+    
+    return res.status(502).json({
+      error: 'Google Sheets API error',
+      details: error.message
+    });
+  }
+}
+
+// Initialize and start server
+(async () => {
+  try {
+    await auth.authorize();
+    await initSheet();
+    
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+      console.log('Test endpoints:');
+      console.log('Single: curl -X POST http://localhost:3000/gs -H "Content-Type: application/json" -d \'{"message":"Test","status":"SUCCESS"}\'');
+      console.log('Mass: curl -X POST http://localhost:3000/gs -H "Content-Type: application/json" -d \'{"message":"Mass","status":"PASS","massInsert":true}\'');
+    });
+  } catch (error) {
+    console.error('Server startup failed:', error);
+    process.exit(1);
+  }
+})();
+
+app.post('/gs', logToSheet);
+/////////////////////////////////
+
+
+app.post('/send-pdf', async (req, res) => {
+  const htmlContent = req.body.input;
+
+  if (!htmlContent) {
+    return res.status(400).json({ error: 'Missing HTML content in request body' });
+  }
+
+  const result = await sendPDFToTelegram(htmlContent);
+
+  if (result.success) {
+    res.json({ message: 'PDF sent to Telegram successfully' });
+  } else {
+    res.status(500).json({ error: 'Failed to send PDF', details: result.error });
+  }
+});
+
+app.get('/business-dashboard', (req, res) => {
+  res.json({
+    total_sales: 1000000,
+    active_orders: 32,
+    new_customers: 18,
+    returns: 3,
+    conversion_rate: 3.2,
+    revenue_trend: [12000, 15000, 18000],
+    category_distribution: {
+      Electronics: 50,
+      Clothing: 30,
+      Home: 20
+    },
+    top_products: {
+      'Gift Box': 180,
+      'Smartwatch': 120,
+      'T-Shirt': 90,
+      'Chocolates': 70,
+      'Perfume': 50
+    },
+    last_orders: [
+      { id: 'INV-101', name: 'Rahul', amount: '₹2500' },
+      { id: 'INV-102', name: 'Aditi', amount: '₹1200' },
+      { id: 'INV-103', name: 'Karan', amount: '₹950' },
+    ]
+  });
+});
+
+
+
+
 
 
 app.post('/get-table', async(req,res)=>{
@@ -136,6 +395,7 @@ app.post("/store-contact", async (req, res) => {
     });
   }
 });
+
 
 // Add this new endpoint to your existing code
 app.post("/zohomail", async (req, res) => {

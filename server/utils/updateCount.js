@@ -30,6 +30,6 @@ export const RecordLimitCheck = async(clientName)=>{
 }
 
 export const GetTableRecordData = async (clientName)=>{
-  let data = await supabase.from(clientName).select("*").eq("form_type","testForm")
+  let data = await supabase.from(clientName).select("*").eq("form_type","whatsapp")
   return data
 }
