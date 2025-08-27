@@ -229,6 +229,79 @@ app.post('/gs', logToSheet);
 /////////////////////////////////
 
 
+////////////////////
+// Add this endpoint to your existing server
+app.post("/send-contact-email", async (req, res) => {
+  try {
+    console.log("Contact form request:", req.body);
+
+    const { user_email, user_name, subject, message } = req.body;
+
+    // Validate required fields
+    if (!user_email || !user_name || !subject || !message) {
+      return res.status(400).json({ 
+        error: "All fields are required: email, name, subject, message" 
+      });
+    }
+
+    // Create transporter using YOUR Gmail credentials
+    const transporter = createTransport({
+      service: "gmail",
+      auth: {
+        user: req.body.to_which_mail, // Your email
+        pass: "yihs glxo irdg owke"
+      },
+    });
+
+    // Verify connection
+    await transporter.verify();
+
+    // Prepare email options
+    const mailOptions = {
+      from: req.body.to_which_mail, // Send from your email
+      to:req.body.to_which_mail, // Send to yourself
+      replyTo: user_email, // So you can reply to the user
+      subject: `Portfolio Contact Form: ${subject}`,
+      text: `
+Name: ${user_name}
+Email: ${user_email}
+Subject: ${subject}
+
+Message:
+${message}
+      `,
+      html: `
+        <h3>New Contact Form Submission</h3>
+        <p><strong>Name:</strong> ${user_name}</p>
+        <p><strong>Email:</strong> ${user_email}</p>
+        <p><strong>Subject:</strong> ${subject}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message.replace(/\n/g, '<br>')}</p>
+        <hr>
+        <p>You can reply directly to: <a href="mailto:${user_email}">${user_email}</a></p>
+      `
+    };
+
+    // Send email
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Contact email sent:", info.messageId);
+
+    return res.json({
+      success: true,
+      message: "Email sent successfully",
+      messageId: info.messageId,
+    });
+
+  } catch (err) {
+    console.error("Contact Email Error:", err);
+    return res.status(500).json({
+      error: "Failed to send email",
+      details: err.message,
+    });
+  }
+});
+/////////
+
 app.post('/send-pdf', async (req, res) => {
   const htmlContent = req.body.input;
 
