@@ -5,6 +5,8 @@ import dotenv from "dotenv";
 // Route imports
 import firebaseRoutes from "./routes/firebaseRoutes.js";
 import emailRoutes from "./routes/emailRoutes.js";
+import supabaseRoutes from "./routes/supabaseRoutes.js"
+// import { supabase } from "./config/database.js";
 
 const app = express();
 dotenv.config();
@@ -23,6 +25,8 @@ app.use((req, res, next) => {
 // API Routes
 app.use("/api/firebase", firebaseRoutes);
 app.use("/api/email", emailRoutes);
+app.use("/api/supabase", supabaseRoutes);
+
 
 // Health check
 app.get("/api/health", (req, res) => {

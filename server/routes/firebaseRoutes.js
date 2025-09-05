@@ -21,4 +21,4 @@ router.post("/get", validateFirebasePath, firebaseController.getDocument);
 router.get("/health", firebaseController.healthCheck);
 router.get("/test", firebaseController.testEndpoint);
 
-export default router;
+export default router;  

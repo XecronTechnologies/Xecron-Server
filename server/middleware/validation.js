@@ -78,3 +78,24 @@ export const validateContactRequest = (req, res, next) => {
   
   next();
 };
+
+export const validateSupabasePath = (req, res, next) => {
+  const { path } = req.body;
+  
+  if (!path || !Array.isArray(path)) {
+    return res.status(400).json({ 
+      success: false,
+      error: "Path must be an array" 
+    });
+  }
+  
+  
+  if (path.length === 0 || path.length > 2) {
+    return res.status(400).json({ 
+      success: false,
+      error: "Path must have 1 or 2 segments" 
+    });
+  }
+  
+  next();
+};
