@@ -19,15 +19,15 @@ export class FirebaseService {
     let serviceAccount = {
   "type": "service_account",
   "project_id": "xecron-client-management",
-  "private_key_id": "c4df08f485582b362d4858ed3a321b41c01346e6",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC27aJB5Mk+n/Pa\n9xF2A9DT5OE8dF9xogjF8eqlteAIP+nkrcUQNKTDmS01+wiy8SJuqHMqFfZXnQ5/\n0i/czv4VusJjPewc73Vb716cL6DH6rJa11o1NTNZ1ZuUzuA1WY21ym/DKcWRnHVf\nQlZh4nt9SkuMkOifju8HS9q6IpnAh/xqhWF8aRiPbjy2xrdqOfYOAEX1oMGa/raa\nv8nygzRfCY3cnvjmhXxR3TftsU9wv62B+eyhtPCzM54VWLiU3hrehZrSPtMeNtvk\nWZ1P4TYkg1Ik3tja5Ud1CZNMrq5LHjNs4GrDFsCykUZndEF1y0IXrRWEZ8e6YwFO\nwkV9hX5vAgMBAAECggEADzy+HkUDal8CfgPEhZMNywiupk1/QcTgfDSJeiIrNiS0\nw+Khnpbz/oL83Bk8AUPKvXL0nNXVfjjL42PLrtXjHkY/OOsIhuR/XxgSRmpFN0Ha\nd2ymy/XRgDMl0YBl9qut/S2On7AUD+v7buLktSSbarVMk7niVqAeUvpDjuug6QOG\ne/EZJY9Ul8bE/q2xDRWYqZzQkOxQ/OHGdgROOunzV+jyVMdeLjEyRGpBUhYjJHRy\n923rSll4tAmWUp34XCsUWjPozgBSwhveBs8K5Z9s18lXdFYU4deeNJZqhK+rAcDI\nkC6Jcexqr6tfwUeFAVTEXzCEAGbaRZrXzW5XAUEqQQKBgQDzMGYUIoU1lxj6+xI0\nqaj8wnn3Wvw0gK45hH4EFHGlvoNfckK0tTc2VqK9ud1UqmoYoBXMwhpJJ3CC+bLa\np0Jt1Ujgt47kdyWMxyYR0AO+WWj7PZpjBtMXDo9OcQl9Jws2omE0nFLTQZQYU13R\nLjbfTBdk43C/eiWk7RJ12+TyoQKBgQDAkJHEzw752Y2Kok1+utCTSdxl4FWViNts\nKubU9RXoA/mUJMhEfp41Ng6klF0LBQFWnInpXmthvgUeAYN+cYDT2hhuC3C6oDEM\n9dppSCOB3aonvfmDAm1ByemvxhyZ4npUTHw6TbHYJaA20TPUFEmCK4mJAZ9ak8Ed\n55C/AKznDwKBgAMcDVIYlud2hSVAbJ0rxjNlMTYOfccWFiQ6I3pd4I4j/34K8ftp\njckuFmqio8ffXffupBi4KqngzTl/g9/z34+T+JiXAEa/l0VTjpMPu9yFPChqQz0c\n6zoSP5bbLyngg+4w6VlI3m5BGmmtNzfjhWQZjvsFRX3NTAnt1hyXsTfBAoGANftR\nId75z8jRCQAewVwVhHS8OEL/OwA2osgUFbbvAS+8E2+MRMdKCpiw2ipNOv2YNnOD\npcw2RhxCyvqZpiSjfMAzAQZr/6VQmtWA+OqkKY++V43GGJfhkQPNYt0iv3Dh4ife\n22lUZceGdleHM/jL8pXJ5IJz7axmAsAbr6+8yLkCgYB6w90QXn16WldgWsaRWkVm\nxkH3oaKaAasbnFYI+iA/mI2mJT7gTQtmo/c7y8KmA+IM6+W2P0XHedP5E8A15h6+\n6o7YXjztvSTJdeqctzot3pvUiJaEEl1W6X+gv4VBiCAZS4DNw2PLU0wzdxx6GkKN\noo5i7eiqRBd9aBHKh7Z/kA==\n-----END PRIVATE KEY-----\n",
-  "client_email": "firebase-adminsdk-fbsvc@xecron-client-management.iam.gserviceaccount.com",
-  "client_id": "101612298437554032831",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40xecron-client-management.iam.gserviceaccount.com",
-  "universe_domain": "googleapis.com"
+  "private_key_id": process.env.PRIVATE_KEY_ID,
+  "private_key": process.env.PRIVATE_KEY,
+  "client_email": process.env.CLIENT_EMAIL,
+  "client_id": process.env.CLIENT_ID,
+  "auth_uri": process.env.AUTH_URI,
+  "token_uri": process.env.TOKEN_URI,
+  "auth_provider_x509_cert_url": process.env.AUTH_PROVIDER_X509_CERT_URL,
+  "client_x509_cert_url": process.env.CLIENT_X509_CERT_URL,
+  "universe_domain":process.env.UNIVERSE_DOMAIN
 }
 
  if (!admin.apps.length) {
