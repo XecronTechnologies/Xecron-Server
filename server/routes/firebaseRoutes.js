@@ -18,6 +18,7 @@ router.delete("/delete", validateFirebasePath, firebaseController.deleteDocument
 // READ operations (existing)
 router.post("/list", validateFirebasePath, firebaseController.listSubcollections);
 router.post("/get", validateFirebasePath, firebaseController.getDocument);
+router.post('/collection/documents', firebaseController.getAllDocumentsInCollection);
 router.get("/health", firebaseController.healthCheck);
 router.get("/test", firebaseController.testEndpoint);
 

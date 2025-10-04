@@ -11,5 +11,6 @@ export const supabase = createClient(
 export const DB_TABLES = {
   CLIENTS: "xecron_clients_limitations",
   CREDENTIALS: "client_credentials",
-  CUSTOMERS: "customers"
+  CUSTOMERS: "customers",
+  CLIENT_TOKENS: "client_tokens"
 };

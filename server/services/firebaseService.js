@@ -2,7 +2,7 @@ import admin from "firebase-admin";
 import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
-const serviceAccount = require("./serviceAccountKey.json");
+// const serviceAccount = require("./serviceAccountKey.json");
 
 // Initialize Firebase only once
 // if (!admin.apps.length) {
@@ -18,23 +18,24 @@ export class FirebaseService {
     let client_cert_url_value = "firebase-adminsdk-fbsvc%40learning-23088" || process.env.FIREBASE_CLIENT_CERT_URL_VALUE
     let serviceAccount = {
   "type": "service_account",
-  "project_id": "learning-23088" || process.env.FIREBASE_PROJECT_ID,
-  "private_key_id": "6fcc700acaf192296f4f3812e32c990c0aed3546"|| process.env.FIREBASE_PRIVATE_KEY_ID,
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDClrM04BUhklI6\nHpU7gPpqTGUByXsJmCTX0WCWk318S7PAz510EXJ1XSwiAWrdQvUBoAiCUVKQiWtP\nQuWcjX3T+pEhRjY7bgH+l0ldINoJAJK3z5s/mtvdj68iW24/oda1A7lhll851kla\nPYDnLTj2KLNvhSK/xCOLSXDmGFS6fqnILAO9wqOXuz9R6Qs68haz6gGAPKQotZYf\noyp4EURQPJ1xZuCZ2djtypCR+yuH5uSIe/eKwmiRgZl9zS1gn51BXhAb+pIpw6NZ\nWTuiOgBsp9NX936E4mCnjEYIxmyLV5Ne3nxfVQiSeeVZUK6sTBzbWZfMkwpDLB7B\nG5ugIJQXAgMBAAECggEAFFyD41wwpIhUwFjOPCFn5/2XHX5sDc9KHlHTbeOAYE7k\n6p+5lcP0RSGlv5KEZc4Jfc0KzDrJjURD4qcDsxj/JKegeL80Z42VpIKcyPjqDRfD\n7SX1Kc0A2rNGm9gTYOcvZKuUwghjwyqQFw2T0nI3S/1q9pgTexuBWKQrrc1ioveg\nAwmaZ6tXyZ8oakmIs/i9DwzaYG08Lg5c57wPQ/kFLlD3nouvZbUTIv29Vomdrc2Z\nC1PTBsdg+ZlV6gEqkq3R4HQcJzvUF5gGdz4r6NrOQ465ublrzDG8J7PSylfJ1iYg\nuc9PRr4TsbZZnLNL0Z8agfZc3WRORYipRvBmqDy9kQKBgQDhIxzWtNp7WPvKmL8T\nqyDqbROXy2g/nOmn1aiFIIQu8z0mpKqIrELgQpM1UbP/IXqTiUxLEVVfsX8KOKDJ\nHJzh+yd/lHGyLxulTmWM5QRGprBizWaTn/1IDymW7R+PBu++LpFOSSKRAChS/cgo\nk9LRm3e61M/UcFfPBVOrlvDtSQKBgQDdQ4dzXiEbQWNPfPoFymwBl0m8WHnhiuSS\nBE8srR1F3i5ENdJ1KwfQlfrU2dt6t1uSueSwPz/5ONHvq3GH8mqdLPptaduMvcQM\n2lxze3G2GfK2hOYZQq/ADlAzEKexO6/pAEStiyC+YgYW/am6grtQdf3OJPNw/GSj\nXmRkbvJWXwKBgQDGrqIIqNoW+NRcWqhlxyPpPhGIaC271dIuF1P9CFEezfItZCxL\nKRprptUavNvIT9dI1GXL6aQaKx4d+xOJ6AJbO7YD1RDxWrlfDOx5hrJbV0daKkJY\nDV0MdrURSHoNUuXIRHhfShODO0xa0TQO+0WVTUpASwaOSAZ14BGS4EYGYQKBgCMT\nMmSqdksQyYJvSF8koIx8BBdUWzXSw7sV7csiQjKyLtlnQs6KHLoHHHUjd/RzHpQa\n3dLGpAiI5la88clgN2BlIem4TzJ3Xp2++8retb7tTBl85dD5Tkz+t93wdPTWhmNE\nRJ7SIEWt2lNIsOA9Gx59JdfI6cJucDGpo/Z70/S3AoGAceYC77KPZMYeOQKuVBf9\nt74s0ab5/ZXuDWAubheepyIj4zzd9oFmdLUWPfoV7zo23rnaEvBPOpukF24CafSC\nRR5GiRIyRut6PBzAVwbbMwB7f7b4+N6q7qYD6aquzeISFF3rY9EYEqjQqnJ3PIv5\n1XgNg8vpuHLtsgAHW+tqNME=\n-----END PRIVATE KEY-----\n" || process.env.FIREBASE_PRIVATE_KEY,
-  "client_email": "firebase-adminsdk-fbsvc@learning-23088.iam.gserviceaccount.com" || process.env.FIREBASE_CLIENT_EMAIL,
-  "client_id": "106187795167305743425" || process.env.FIREBASE_CLIENT_ID,
+  "project_id": "xecron-client-management",
+  "private_key_id": "c4df08f485582b362d4858ed3a321b41c01346e6",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC27aJB5Mk+n/Pa\n9xF2A9DT5OE8dF9xogjF8eqlteAIP+nkrcUQNKTDmS01+wiy8SJuqHMqFfZXnQ5/\n0i/czv4VusJjPewc73Vb716cL6DH6rJa11o1NTNZ1ZuUzuA1WY21ym/DKcWRnHVf\nQlZh4nt9SkuMkOifju8HS9q6IpnAh/xqhWF8aRiPbjy2xrdqOfYOAEX1oMGa/raa\nv8nygzRfCY3cnvjmhXxR3TftsU9wv62B+eyhtPCzM54VWLiU3hrehZrSPtMeNtvk\nWZ1P4TYkg1Ik3tja5Ud1CZNMrq5LHjNs4GrDFsCykUZndEF1y0IXrRWEZ8e6YwFO\nwkV9hX5vAgMBAAECggEADzy+HkUDal8CfgPEhZMNywiupk1/QcTgfDSJeiIrNiS0\nw+Khnpbz/oL83Bk8AUPKvXL0nNXVfjjL42PLrtXjHkY/OOsIhuR/XxgSRmpFN0Ha\nd2ymy/XRgDMl0YBl9qut/S2On7AUD+v7buLktSSbarVMk7niVqAeUvpDjuug6QOG\ne/EZJY9Ul8bE/q2xDRWYqZzQkOxQ/OHGdgROOunzV+jyVMdeLjEyRGpBUhYjJHRy\n923rSll4tAmWUp34XCsUWjPozgBSwhveBs8K5Z9s18lXdFYU4deeNJZqhK+rAcDI\nkC6Jcexqr6tfwUeFAVTEXzCEAGbaRZrXzW5XAUEqQQKBgQDzMGYUIoU1lxj6+xI0\nqaj8wnn3Wvw0gK45hH4EFHGlvoNfckK0tTc2VqK9ud1UqmoYoBXMwhpJJ3CC+bLa\np0Jt1Ujgt47kdyWMxyYR0AO+WWj7PZpjBtMXDo9OcQl9Jws2omE0nFLTQZQYU13R\nLjbfTBdk43C/eiWk7RJ12+TyoQKBgQDAkJHEzw752Y2Kok1+utCTSdxl4FWViNts\nKubU9RXoA/mUJMhEfp41Ng6klF0LBQFWnInpXmthvgUeAYN+cYDT2hhuC3C6oDEM\n9dppSCOB3aonvfmDAm1ByemvxhyZ4npUTHw6TbHYJaA20TPUFEmCK4mJAZ9ak8Ed\n55C/AKznDwKBgAMcDVIYlud2hSVAbJ0rxjNlMTYOfccWFiQ6I3pd4I4j/34K8ftp\njckuFmqio8ffXffupBi4KqngzTl/g9/z34+T+JiXAEa/l0VTjpMPu9yFPChqQz0c\n6zoSP5bbLyngg+4w6VlI3m5BGmmtNzfjhWQZjvsFRX3NTAnt1hyXsTfBAoGANftR\nId75z8jRCQAewVwVhHS8OEL/OwA2osgUFbbvAS+8E2+MRMdKCpiw2ipNOv2YNnOD\npcw2RhxCyvqZpiSjfMAzAQZr/6VQmtWA+OqkKY++V43GGJfhkQPNYt0iv3Dh4ife\n22lUZceGdleHM/jL8pXJ5IJz7axmAsAbr6+8yLkCgYB6w90QXn16WldgWsaRWkVm\nxkH3oaKaAasbnFYI+iA/mI2mJT7gTQtmo/c7y8KmA+IM6+W2P0XHedP5E8A15h6+\n6o7YXjztvSTJdeqctzot3pvUiJaEEl1W6X+gv4VBiCAZS4DNw2PLU0wzdxx6GkKN\noo5i7eiqRBd9aBHKh7Z/kA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-fbsvc@xecron-client-management.iam.gserviceaccount.com",
+  "client_id": "101612298437554032831",
   "auth_uri": "https://accounts.google.com/o/oauth2/auth",
   "token_uri": "https://oauth2.googleapis.com/token",
   "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": `https://www.googleapis.com/robot/v1/metadata/x509/${client_cert_url_value}.iam.gserviceaccount.com`,
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40xecron-client-management.iam.gserviceaccount.com",
   "universe_domain": "googleapis.com"
 }
+
  if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
   });
 }
-  const db = kkkadmin.firestore();
+  const db = admin.firestore();
 
     let ref = db;
     
@@ -57,8 +58,7 @@ export class FirebaseService {
       console.log("Create document request:", { path, data });
       
       const ref = this.buildReferenceFromPath(path);
-      
-      // Ensure we're at collection level (path should end with collection)
+    
       if (ref.constructor.name !== 'CollectionReference') {
         throw new Error("Path must point to a collection to create new document");
       }
@@ -66,6 +66,8 @@ export class FirebaseService {
       // Create new document with auto-generated ID
       const newDocRef = ref.doc();
       await newDocRef.set(data);
+
+    
       
       return { 
         success: true,
@@ -80,6 +82,51 @@ export class FirebaseService {
       throw new Error(`Create failed: ${error.message}`);
     }
   }
+
+  // READ - Get all documents in a collection
+static async getAllDocumentsInCollection(path) {
+  try {
+    console.log("Get all documents in collection request:", { path });
+    
+    const ref = this.buildReferenceFromPath(path);
+    
+    // Ensure we're at collection level
+    if (ref.constructor.name !== 'CollectionReference') {
+      throw new Error("Path must point to a collection to get all documents");
+    }
+    
+    // Get all documents in the collection
+    const snapshot = await ref.get();
+    
+    if (snapshot.empty) {
+      return { 
+        success: true,
+        message: "Collection is empty",
+        documents: [],
+        path: ref.path,
+        count: 0
+      };
+    }
+    
+    const documents = snapshot.docs.map(doc => ({
+      id: doc.id,
+      data: doc.data(),
+      path: doc.ref.path
+    }));
+    
+    return { 
+      success: true,
+      message: "Documents retrieved successfully",
+      documents: documents,
+      path: ref.path,
+      count: documents.length
+    };
+    
+  } catch (error) {
+    console.error("Error getting all documents in collection:", error);
+    throw new Error(`Get all documents failed: ${error.message}`);
+  }
+}
 
   // CREATE - Create document with specific ID
   static async createDocumentWithId(path, documentId, data) {
@@ -112,11 +159,38 @@ export class FirebaseService {
   }
 
   // UPDATE - Update existing document (merge with existing data)
-  static async updateDocument(path, data, merge = true) {
+  static async updateDocument(path, data, merge = true,row_body) {
     try {
+      console.log("updateDocument+row_body",row_body)
+      const supa_resp = await fetch("http://localhost:3000/api/supabase/updaterow",{
+        method:"PUT",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify(row_body)
+      })
+      const supa_respdata = await supa_resp.json()
+      console.log("supa_respdata",supa_respdata)
+
+      if(!supa_respdata.success) return {
+        status:false,
+        reason : supa_respdata.reason,
+        solution:supa_respdata.solution
+      }
+
+      // const supa_resp_usage = await fetch(`http://localhost:3000/api/supabase/record?table=${row_body.table}&cl_unique_id=${row_body.cl_unique_id}`,{
+      //   method:"GET",
+      // })
+      // console.log("supa_resp_usage",supa_resp_usage)
+
+      // const supa_respdata_usage = await supa_resp_usage.json()
+
+
+      console.log("supabase from firebase")
       console.log("Update document request:", { path, data, merge });
       
       const ref = this.buildReferenceFromPath(path);
+      // console.log("ref",ref)
       
       // Ensure we're at document level
       if (ref.constructor.name !== 'DocumentReference') {
@@ -125,6 +199,7 @@ export class FirebaseService {
       
       // Check if document exists
       const doc = await ref.get();
+  
       if (!doc.exists) {
         throw new Error("Document not found - cannot update");
       }
@@ -134,13 +209,16 @@ export class FirebaseService {
       
       // Get updated document
       const updatedDoc = await ref.get();
+
+   
       
       return { 
         success: true,
         message: `Document ${merge ? 'updated' : 'replaced'} successfully`,
-        path: ref.path,
+        // path: ref.path,
         documentId: ref.id,
-        data: updatedDoc.data()
+        data: updatedDoc.data(),
+        supabase_usage: supa_respdata
       };
       
     } catch (error) {

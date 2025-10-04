@@ -41,6 +41,38 @@ export const firebaseController = {
       });
     }
   },
+  // GET ALL - Get all documents in a collection
+getAllDocumentsInCollection: async (req, res) => {
+  try {
+    console.log("Get all documents in collection request:", req.body);
+    
+    const { path } = req.body;
+    
+    if (!path || !Array.isArray(path)) {
+      return res.status(STATUS_CODES.BAD_REQUEST).json({ 
+        success: false,
+        error: "Path must be an array" 
+      });
+    }
+    
+    // Path should end with collection (odd number of segments)
+    if (path.length % 2 !== 1) {
+      return res.status(STATUS_CODES.BAD_REQUEST).json({ 
+        success: false,
+        error: "Path must point to a collection (e.g., ['users'])" 
+      });
+    }
+    
+    const result = await FirebaseService.getAllDocumentsInCollection(path);
+    res.status(STATUS_CODES.SUCCESS).json(result);
+  } catch (error) {
+    console.error("Controller error in getAllDocumentsInCollection:", error);
+    res.status(STATUS_CODES.INTERNAL_ERROR).json({ 
+      success: false,
+      error: error.message 
+    });
+  }
+},
 
   // CREATE - New document with specific ID
   createDocumentWithId: async (req, res) => {
@@ -94,7 +126,7 @@ export const firebaseController = {
     try {
       console.log("Update document request:", req.body);
       
-      const { path, data, merge } = req.body;
+      const { path, data, merge,row_body } = req.body;
       
       if (!path || !Array.isArray(path)) {
         return res.status(STATUS_CODES.BAD_REQUEST).json({ 
@@ -118,7 +150,7 @@ export const firebaseController = {
         });
       }
       
-      const result = await FirebaseService.updateDocument(path, data, merge !== false);
+      const result = await FirebaseService.updateDocument(path, data, merge !== false,row_body);
       res.status(STATUS_CODES.SUCCESS).json(result);
     } catch (error) {
       console.error("Controller error in updateDocument:", error);

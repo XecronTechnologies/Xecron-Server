@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
+import googleDriveRoutes from "./routes/googleDriveRoutes.js";
+
 // Route imports
 import firebaseRoutes from "./routes/firebaseRoutes.js";
 import emailRoutes from "./routes/emailRoutes.js";
@@ -26,6 +28,7 @@ app.use((req, res, next) => {
 app.use("/api/firebase", firebaseRoutes);
 app.use("/api/email", emailRoutes);
 app.use("/api/supabase", supabaseRoutes);
+app.use("/api/drive", googleDriveRoutes);
 
 
 // Health check
