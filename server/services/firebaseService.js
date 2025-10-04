@@ -15,7 +15,6 @@ const serviceAccount = require("./serviceAccountKey.json");
 
 export class FirebaseService {
   static buildReferenceFromPath(path) {
-    let client_cert_url_value = "firebase-adminsdk-fbsvc%40learning-23088" || process.env.FIREBASE_CLIENT_CERT_URL_VALUE
     let serviceAccount = {
   "type": "service_account",
   "project_id": "xecron-client-management",
