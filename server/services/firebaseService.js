@@ -5,19 +5,17 @@ import { SupabaseService } from "./supabaseService.js";
 export class FirebaseService {
 
   // Initialize Firebase only once
-  static async initialize() {
+  static async initialize(ser_acc_id) {
     if (!admin.apps.length) {
       try {
         // Fetch service account JSON from Supabase
-        const { success, data } = await SupabaseService.getTableData('firebase_service_account');
-let temp_data = await SupabaseService.getTableData('firebase_service_account');
+        const { success, data } = await SupabaseService.getRecordById('firebase_service_account',ser_acc_id);
+let temp_data = await SupabaseService.getRecordById('firebase_service_account',ser_acc_id)
         console.log("temp_data",temp_data)
         // if (!success || !data || data.length === 0) {
         //   throw new Error("No Firebase service account found in Supabase");
         // }
-
-        // Assume first row contains the JSON in 'json' column
-        const serviceAccount = JSON.parse(data[0].json);
+        const serviceAccount = JSON.parse(data.json);
 
         // Fix line breaks in private_key if stored with \n
         if (serviceAccount.private_key) {
@@ -39,8 +37,8 @@ let temp_data = await SupabaseService.getTableData('firebase_service_account');
   }
 
   // Build Firestore reference from path array
-  static async buildReferenceFromPath(path) {
-    const db = await this.initialize();
+  static async buildReferenceFromPath(path,ser_acc_id) {
+    const db = await this.initialize(ser_acc_id);
     let ref = db;
 
     for (let i = 0; i < path.length; i++) {
@@ -55,11 +53,11 @@ let temp_data = await SupabaseService.getTableData('firebase_service_account');
   }
 
   // CREATE - Create new document with auto-generated ID
-  static async createDocument(path, data) {
+  static async createDocument(path, data,ser_acc_id) {
     try {
       console.log("Create document request:", { path, data });
       
-      const ref = await this.buildReferenceFromPath(path);
+      const ref = await this.buildReferenceFromPath(path,ser_acc_id);
     
       if (ref.constructor.name !== 'CollectionReference') {
         throw new Error("Path must point to a collection to create new document");
@@ -86,16 +84,16 @@ let temp_data = await SupabaseService.getTableData('firebase_service_account');
   }
 
   // READ - Get all documents in a collection
-static async getAllDocumentsInCollection(path) {
+static async getAllDocumentsInCollection(path,ser_acc_id) {
   try {
     console.log("Get all documents in collection request:", { path });
     
-    const ref = await this.buildReferenceFromPath(path);
+    const ref = await this.buildReferenceFromPath(path,ser_acc_id);
     
     // Ensure we're at collection level
-    if (ref.constructor.name !== 'CollectionReference') {
-      throw new Error("Path must point to a collection to get all documents");
-    }
+    // if (ref.constructor.name !== 'CollectionReference') {
+    //   throw new Error("Path must point to a collection to get all documents");
+    // }
     
     // Get all documents in the collection
     const snapshot = await ref.get();
@@ -131,11 +129,11 @@ static async getAllDocumentsInCollection(path) {
 }
 
   // CREATE - Create document with specific ID
-  static async createDocumentWithId(path, documentId, data) {
+  static async createDocumentWithId(path, documentId, data,ser_acc_id) {
     try {
       console.log("Create document with ID request:", { path, documentId, data });
       
-      let ref = await this.buildReferenceFromPath(path);
+      let ref = await this.buildReferenceFromPath(path,ser_acc_id);
       
       // Ensure we're at collection level
       if (ref.constructor.name !== 'CollectionReference') {
@@ -161,7 +159,7 @@ static async getAllDocumentsInCollection(path) {
   }
 
   // UPDATE - Update existing document (merge with existing data)
-  static async updateDocument(path, data, merge = true,row_body) {
+  static async updateDocument(path, data, merge = true,row_body,ser_acc_id) {
     try {
       console.log("updateDocument+row_body",row_body)
       const supa_resp = await fetch("http://localhost:3000/api/supabase/updaterow",{
@@ -191,7 +189,7 @@ static async getAllDocumentsInCollection(path) {
       console.log("supabase from firebase")
       console.log("Update document request:", { path, data, merge });
       
-      const ref = await this.buildReferenceFromPath(path);
+      const ref = await this.buildReferenceFromPath(path,ser_acc_id);
       // console.log("ref",ref)
       
       // Ensure we're at document level
@@ -230,11 +228,11 @@ static async getAllDocumentsInCollection(path) {
   }
 
   // DELETE - Delete document
-  static async deleteDocument(path) {
+  static async deleteDocument(path,ser_acc_id) {
     try {
       console.log("Delete document request:", { path });
       
-      const ref = await this.buildReferenceFromPath(path);
+      const ref = await this.buildReferenceFromPath(path,ser_acc_id);
       
       // Ensure we're at document level
       if (ref.constructor.name !== 'DocumentReference') {
@@ -265,9 +263,9 @@ static async getAllDocumentsInCollection(path) {
   }
 
   // READ - Get document data (already exists, keeping for completeness)
-  static async getDocument(path) {
+  static async getDocument(path,ser_acc_id) {
     try {
-      const ref = await this.buildReferenceFromPath(path);
+      const ref = await this.buildReferenceFromPath(path,ser_acc_id);
       
       if (ref.constructor.name !== 'DocumentReference') {
         throw new Error("Path must point to a document");
@@ -293,9 +291,9 @@ static async getAllDocumentsInCollection(path) {
   }
 
   // LIST - List collections/documents (already exists, keeping for completeness)
-  static async listSubcollections(path) {
+  static async listSubcollections(path,ser_acc_id) {
     try {
-      const ref = await this.buildReferenceFromPath(path);
+      const ref = await this.buildReferenceFromPath(path,ser_acc_id);
       
       if (ref.constructor.name === 'CollectionReference') {
         const snapshot = await ref.get();

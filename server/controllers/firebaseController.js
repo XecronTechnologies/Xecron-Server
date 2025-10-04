@@ -7,7 +7,7 @@ export const firebaseController = {
     try {
       console.log("Create document request:", req.body);
       
-      const { path, data } = req.body;
+      const { path, data,ser_acc_id } = req.body;
       
       if (!path || !Array.isArray(path)) {
         return res.status(STATUS_CODES.BAD_REQUEST).json({ 
@@ -31,7 +31,7 @@ export const firebaseController = {
         });
       }
       
-      const result = await FirebaseService.createDocument(path, data);
+      const result = await FirebaseService.createDocument(path, data,ser_acc_id);
       res.status(STATUS_CODES.CREATED).json(result);
     } catch (error) {
       console.error("Controller error in createDocument:", error);
@@ -46,7 +46,7 @@ getAllDocumentsInCollection: async (req, res) => {
   try {
     console.log("Get all documents in collection request:", req.body);
     
-    const { path } = req.body;
+    const { path,ser_acc_id } = req.body;
     
     if (!path || !Array.isArray(path)) {
       return res.status(STATUS_CODES.BAD_REQUEST).json({ 
@@ -63,7 +63,7 @@ getAllDocumentsInCollection: async (req, res) => {
       });
     }
     
-    const result = await FirebaseService.getAllDocumentsInCollection(path);
+    const result = await FirebaseService.getAllDocumentsInCollection(path,ser_acc_id);
     res.status(STATUS_CODES.SUCCESS).json(result);
   } catch (error) {
     console.error("Controller error in getAllDocumentsInCollection:", error);
@@ -79,7 +79,7 @@ getAllDocumentsInCollection: async (req, res) => {
     try {
       console.log("Create document with ID request:", req.body);
       
-      const { path, documentId, data } = req.body;
+      const { path, documentId, data ,ser_acc_id} = req.body;
       
       if (!path || !Array.isArray(path)) {
         return res.status(STATUS_CODES.BAD_REQUEST).json({ 
@@ -110,7 +110,7 @@ getAllDocumentsInCollection: async (req, res) => {
         });
       }
       
-      const result = await FirebaseService.createDocumentWithId(path, documentId, data);
+      const result = await FirebaseService.createDocumentWithId(path, documentId, data,ser_acc_id);
       res.status(STATUS_CODES.CREATED).json(result);
     } catch (error) {
       console.error("Controller error in createDocumentWithId:", error);
@@ -126,7 +126,7 @@ getAllDocumentsInCollection: async (req, res) => {
     try {
       console.log("Update document request:", req.body);
       
-      const { path, data, merge,row_body } = req.body;
+      const { path, data, merge,row_body,ser_acc_id} = req.body;
       
       if (!path || !Array.isArray(path)) {
         return res.status(STATUS_CODES.BAD_REQUEST).json({ 
@@ -150,7 +150,7 @@ getAllDocumentsInCollection: async (req, res) => {
         });
       }
       
-      const result = await FirebaseService.updateDocument(path, data, merge !== false,row_body);
+      const result = await FirebaseService.updateDocument(path, data, merge !== false,row_body,ser_acc_id);
       res.status(STATUS_CODES.SUCCESS).json(result);
     } catch (error) {
       console.error("Controller error in updateDocument:", error);
@@ -166,7 +166,7 @@ getAllDocumentsInCollection: async (req, res) => {
     try {
       console.log("Delete document request:", req.body);
       
-      const { path } = req.body;
+      const { path,ser_acc_id } = req.body;
       
       if (!path || !Array.isArray(path)) {
         return res.status(STATUS_CODES.BAD_REQUEST).json({ 
@@ -183,7 +183,7 @@ getAllDocumentsInCollection: async (req, res) => {
         });
       }
       
-      const result = await FirebaseService.deleteDocument(path);
+      const result = await FirebaseService.deleteDocument(path,ser_acc_id);
       res.status(STATUS_CODES.SUCCESS).json(result);
     } catch (error) {
       console.error("Controller error in deleteDocument:", error);
@@ -198,7 +198,7 @@ getAllDocumentsInCollection: async (req, res) => {
     try {
       console.log("ListSubcollections request body:", req.body);
       
-      const { path } = req.body;
+      const { path,ser_acc_id} = req.body;
       
       if (!path) {
         return res.status(STATUS_CODES.BAD_REQUEST).json({ 
@@ -214,7 +214,7 @@ getAllDocumentsInCollection: async (req, res) => {
         });
       }
       
-      const result = await FirebaseService.listSubcollections(path);
+      const result = await FirebaseService.listSubcollections(path,ser_acc_id);
 
       res.status(STATUS_CODES.SUCCESS).json(result);
     } catch (error) {
@@ -230,7 +230,7 @@ getAllDocumentsInCollection: async (req, res) => {
     try {
       console.log("GetDocument request body:", req.body);
       
-      const { path } = req.body;
+      const { path,ser_acc_id } = req.body;
       
       if (!path || !Array.isArray(path)) {
         return res.status(STATUS_CODES.BAD_REQUEST).json({ 
@@ -239,7 +239,7 @@ getAllDocumentsInCollection: async (req, res) => {
         });
       }
       
-      const result = await FirebaseService.getDocument(path);
+      const result = await FirebaseService.getDocument(path,ser_acc_id);
 
       res.status(STATUS_CODES.SUCCESS).json(result);
     } catch (error) {
@@ -255,7 +255,7 @@ getAllDocumentsInCollection: async (req, res) => {
     try {
       console.log("SaveDocument request body:", req.body);
       
-      const { path, data } = req.body;
+      const { path, data,ser_acc_id } = req.body;
       
       if (!path || !Array.isArray(path)) {
         return res.status(STATUS_CODES.BAD_REQUEST).json({ 
@@ -271,7 +271,7 @@ getAllDocumentsInCollection: async (req, res) => {
         });
       }
       
-      const result = await FirebaseService.saveDocument(path, data);
+      const result = await FirebaseService.saveDocument(path, data,ser_acc_id);
 
       res.status(STATUS_CODES.SUCCESS).json(result);
     } catch (error) {
