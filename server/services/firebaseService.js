@@ -15,8 +15,9 @@ const serviceAccount = require("./serviceAccountKey.json");
 
 export class FirebaseService {
   static buildReferenceFromPath(path) {
+    let text = "service_account"
     let serviceAccount = {
-  "type": "service_account",
+  "type":text,
   "project_id": "xecron-client-management",
   "private_key_id": process.env.PRIVATE_KEY_ID,
   "private_key": process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
