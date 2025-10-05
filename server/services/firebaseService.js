@@ -1,6 +1,7 @@
 // firebaseService.js
 import admin from "firebase-admin";
 import { SupabaseService } from "./supabaseService.js";
+import { generateId } from "../utils/idGenerator.js";
 
 export class FirebaseService {
 
@@ -64,8 +65,21 @@ let temp_data = await SupabaseService.getRecordById('firebase_service_account',s
       }
       
       // Create new document with auto-generated ID
-      const newDocRef = ref.doc();
-      await newDocRef.set(data);
+      // const newDocRef = ref.doc();
+
+      // await newDocRef.set(data);
+      const customId = generateId();
+      console.log("Generated custom ID:", customId);
+      
+      // Create document with our custom ID
+      // const docRef = ref.doc(customId);
+      const newDocRef = ref.doc(customId);
+
+      await newDocRef.set({
+        ...data,
+        id: customId, // Also store the ID in the document data if needed
+        created_at: new Date().toISOString()
+      });
 
     
       
