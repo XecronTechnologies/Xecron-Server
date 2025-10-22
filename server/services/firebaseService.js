@@ -176,7 +176,7 @@ static async getAllDocumentsInCollection(path,ser_acc_id) {
   static async updateDocument(path, data, merge = true,row_body,ser_acc_id) {
     try {
       console.log("updateDocument+row_body",row_body)
-      const supa_resp = await fetch("http://localhost:3000/api/supabase/updaterow",{
+      const supa_resp = await fetch("https://api.xecrontechnologies.in/api/supabase/updaterow",{
         method:"PUT",
         headers:{
           "Content-Type":"application/json"
